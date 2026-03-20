@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Select Symptoms</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+font-family:Arial;
+background:#e8f5e9;
+text-align:center;
+}
+
+select{
+padding:10px;
+font-size:16px;
+margin:15px;
+}
+
+#symptomList{
+width:400px;
+margin:auto;
+text-align:left;
+background:white;
+padding:15px;
+border-radius:8px;
+box-shadow:0px 0px 8px gray;
+}
+
+button{
+padding:12px;
+background:#2e7d32;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+margin-top:20px;
+cursor:pointer;
+}
+
+#result{
+margin-top:20px;
+font-size:20px;
+font-weight:bold;
+color:#1b5e20;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Select Body Category</h1>
+
+<select id="bodyPart" onchange="loadSymptoms()">
+
+<option value="">Select Category</option>
+
+<option>Mental</option>
+
+<option>Women</option>
+
+<option>Head</option>
+
+<option>Digestive</option>
+
+<option>Respiratory</option>
+
+<option>Skin</option>
+
+<option>General</option>
+
+<option>Musculoskeletal</option>
+
+</select>
+
+<h2>Select Symptoms</h2>
+
+<div id="symptomList">
+
+Select category first
+
+</div>
+
+<button onclick="findRemedy()">
+
+Find Remedy
+
+</button>
+
+<h3 id="result"></h3>
+
+<script type="module">
+
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getDatabase,
+ref,
+get
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBRFfsMtyzwG0xbLI9k90perHJeSdJPAhU",
+
+authDomain: "healthnarrative-c4af3.firebaseapp.com",
+
+databaseURL:
+"https://healthnarrative-c4af3-default-rtdb.firebaseio.com",
+
+projectId: "healthnarrative-c4af3",
+
+storageBucket:
+"healthnarrative-c4af3.firebasestorage.app",
+
+messagingSenderId: "637852726804",
+
+appId:
+"1:637852726804:web:ea41a628ff1cef57341901"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
+
+async function loadSymptoms(){
+
+let part=
+
+document.getElementById("bodyPart").value;
+
+const dbRef=
+
+ref(database,"symptoms");
+
+get(dbRef).then((snapshot)=>{
+
+let html="";
+
+if(snapshot.exists()){
+
+let data=snapshot.val();
+
+for(let key in data){
+
+if(data[key].category===part){
+
+html+=
+
+'<label><input type="checkbox" value="'+
+data[key].remedy+
+'"> '+data[key].symptom+
+'</label><br>';
+
+}
+
+}
+
+if(html===""){
+
+html="No symptoms found";
+
+}
+
+document.getElementById("symptomList")
+
+.innerHTML=html;
+
+}
+
+});
+
+}
+
+async function findRemedy(){
+
+let checked=
+
+document.querySelectorAll(
+
+'#symptomList input:checked'
+
+);
+
+if(checked.length===0){
+
+document.getElementById("result")
+
+.innerHTML="Select symptoms";
+
+return;
+
+}
+
+let count={};
+
+checked.forEach((item)=>{
+
+let remedy=item.value;
+
+count[remedy]=(count[remedy]||0)+1;
+
+});
+
+let best="";
+
+let max=0;
+
+for(let r in count){
+
+if(count[r]>max){
+
+max=count[r];
+
+best=r;
+
+}
+
+}
+
+document.getElementById("result")
+
+.innerHTML=
+
+"Suggested Remedy : "+best;
+
+}
+
+window.loadSymptoms=loadSymptoms;
+
+window.findRemedy=findRemedy;
+
+</script>
+
+</body>
+
+</html>
