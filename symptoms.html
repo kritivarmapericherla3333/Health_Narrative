@@ -1,252 +1,405 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
 
-<title>Select Symptoms</title>
+    <meta charset="UTF-8">
 
-<link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <title>Health Narrative - Symptoms</title>
 
-body{
-font-family:Arial;
-background:#e8f5e9;
-text-align:center;
-}
+    <style>
 
-select{
-padding:10px;
-font-size:16px;
-margin:15px;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-#symptomList{
-width:400px;
-margin:auto;
-text-align:left;
-background:white;
-padding:15px;
-border-radius:8px;
-box-shadow:0px 0px 8px gray;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #eaf6eb;
+            color: #111;
+        }
 
-button{
-padding:12px;
-background:#2e7d32;
-color:white;
-border:none;
-border-radius:6px;
-font-size:16px;
-margin-top:20px;
-cursor:pointer;
-}
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: center;
+        }
 
-#result{
-margin-top:20px;
-font-size:20px;
-font-weight:bold;
-color:#1b5e20;
-}
+        h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
 
-</style>
+        h2 {
+            font-size: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 17px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background-color: #256628;
+        }
+
+        #symptomList {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f5faf5;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            color: #2e7d32;
+            font-size: 21px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .back-button {
+            background-color: #555;
+        }
+
+        .back-button:hover {
+            background-color: #333;
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-<h1>Select Body Category</h1>
+    <div class="container">
 
-<select id="bodyPart" onchange="loadSymptoms()">
+        <h1>Health Narrative</h1>
 
-<option value="">Select Category</option>
+        <h2>Homeopathy Remedy Finder</h2>
 
-<option>Mental</option>
 
-<option>Women</option>
+        <div class="card">
 
-<option>Head</option>
+            <h3>Select Body Part</h3>
 
-<option>Digestive</option>
+            <select id="bodyPart">
 
-<option>Respiratory</option>
+                <option value="">-- Select Body Part --</option>
 
-<option>Skin</option>
+                <option value="Head">Head</option>
 
-<option>General</option>
+                <option value="Eyes">Eyes</option>
 
-<option>Musculoskeletal</option>
+                <option value="Ears">Ears</option>
 
-</select>
+                <option value="Nose">Nose</option>
 
-<h2>Select Symptoms</h2>
+                <option value="Throat">Throat</option>
 
-<div id="symptomList">
+                <option value="Chest">Chest</option>
 
-Select category first
+                <option value="Stomach">Stomach</option>
 
-</div>
+                <option value="Skin">Skin</option>
 
-<button onclick="findRemedy()">
+                <option value="Back">Back</option>
 
-Find Remedy
+                <option value="Legs">Legs</option>
 
-</button>
+            </select>
 
-<h3 id="result"></h3>
 
-<script type="module">
+            <button onclick="loadSymptoms()">
+                Load Symptoms
+            </button>
 
-import { initializeApp }
 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+            <h3>Select Your Symptoms</h3>
 
-import {
+            <div id="symptomList">
 
-getDatabase,
-ref,
-get
+                Select a body part to load symptoms.
 
-}
+            </div>
 
-from
 
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+            <div style="text-align:center;">
 
-const firebaseConfig = {
+                <button onclick="findRemedy()">
+                    Find Remedy
+                </button>
 
-apiKey: "AIzaSyBRFfsMtyzwG0xbLI9k90perHJeSdJPAhU",
+                <button
+                    class="back-button"
+                    onclick="window.location.href='index.html'">
+                    Back
+                </button>
 
-authDomain: "healthnarrative-c4af3.firebaseapp.com",
+            </div>
 
-databaseURL:
-"https://healthnarrative-c4af3-default-rtdb.firebaseio.com",
 
-projectId: "healthnarrative-c4af3",
+            <h3 id="result"></h3>
 
-storageBucket:
-"healthnarrative-c4af3.firebasestorage.app",
+        </div>
 
-messagingSenderId: "637852726804",
+    </div>
 
-appId:
-"1:637852726804:web:ea41a628ff1cef57341901"
 
-};
+    <!-- Firebase + Symptoms JavaScript -->
 
-const app = initializeApp(firebaseConfig);
+    <script type="module">
 
-const database = getDatabase(app);
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-async function loadSymptoms(){
 
-let part=
+        import {
+            getDatabase,
+            ref,
+            get
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-document.getElementById("bodyPart").value;
 
-const dbRef=
+        // =====================================
+        // FIREBASE CONFIGURATION
+        // =====================================
 
-ref(database,"symptoms");
+        const firebaseConfig = {
 
-get(dbRef).then((snapshot)=>{
+            apiKey: "AIzaSyBRFfsMtyzwG0xbLI9k90perHJeSdJPAhU",
+            authDomain: "healthnarrative-c4af3.firebaseapp.com",
+            databaseURL: "https://healthnarrative-c4af3-default-rtdb.firebaseio.com",
+            projectId: "healthnarrative-c4af3",
+            storageBucket: "healthnarrative-c4af3.firebasestorage.app",
+            messagingSenderId: "637852726804",
+            appId: "1:637852726804:web:ea41a628ff1cef57341901",
 
-let html="";
+        };
 
-if(snapshot.exists()){
 
-let data=snapshot.val();
+        // Initialize Firebase
 
-for(let key in data){
+        const app = initializeApp(firebaseConfig);
 
-if(data[key].category===part){
+        const database = getDatabase(app);
 
-html+=
 
-'<label><input type="checkbox" value="'+
-data[key].remedy+
-'"> '+data[key].symptom+
-'</label><br>';
+        // =====================================
+        // LOAD SYMPTOMS
+        // =====================================
 
-}
+        async function loadSymptoms() {
 
-}
+            try {
 
-if(html===""){
+                const part =
+                    document.getElementById("bodyPart").value;
 
-html="No symptoms found";
 
-}
+                if (part === "") {
 
-document.getElementById("symptomList")
+                    document.getElementById("symptomList").innerHTML =
+                        "Please select a body part.";
 
-.innerHTML=html;
+                    return;
+                }
 
-}
 
-});
+                const dbRef =
+                    ref(database, "symptoms");
 
-}
 
-async function findRemedy(){
+                const snapshot =
+                    await get(dbRef);
 
-let checked=
 
-document.querySelectorAll(
+                let html = "";
 
-'#symptomList input:checked'
 
-);
+                if (snapshot.exists()) {
 
-if(checked.length===0){
+                    const data = snapshot.val();
 
-document.getElementById("result")
 
-.innerHTML="Select symptoms";
+                    for (let key in data) {
 
-return;
+                        if (data[key].category === part) {
 
-}
+                            html +=
+                                '<label>' +
 
-let count={};
+                                '<input type="checkbox" value="' +
+                                data[key].remedy +
+                                '">' +
 
-checked.forEach((item)=>{
+                                data[key].symptom +
 
-let remedy=item.value;
+                                '</label>';
+                        }
+                    }
 
-count[remedy]=(count[remedy]||0)+1;
 
-});
+                    if (html === "") {
 
-let best="";
+                        html =
+                            "No symptoms found for " + part + ".";
 
-let max=0;
+                    }
 
-for(let r in count){
 
-if(count[r]>max){
+                    document.getElementById("symptomList")
+                        .innerHTML = html;
 
-max=count[r];
 
-best=r;
+                } else {
 
-}
+                    document.getElementById("symptomList")
+                        .innerHTML =
+                        "No symptoms found in Firebase.";
 
-}
+                }
 
-document.getElementById("result")
 
-.innerHTML=
+            } catch (error) {
 
-"Suggested Remedy : "+best;
+                console.error(
+                    "Firebase Error:",
+                    error
+                );
 
-}
 
-window.loadSymptoms=loadSymptoms;
+                document.getElementById("symptomList")
+                    .innerHTML =
+                    "Firebase Error: " +
+                    error.message;
 
-window.findRemedy=findRemedy;
+            }
 
-</script>
+        }
+
+
+        // =====================================
+        // FIND REMEDY
+        // =====================================
+
+        function findRemedy() {
+
+            const checked =
+                document.querySelectorAll(
+                    "#symptomList input:checked"
+                );
+
+
+            if (checked.length === 0) {
+
+                document.getElementById("result")
+                    .innerHTML =
+                    "Please select at least one symptom.";
+
+                return;
+            }
+
+
+            let count = {};
+
+
+            checked.forEach(function(item) {
+
+                const remedy =
+                    item.value;
+
+
+                count[remedy] =
+                    (count[remedy] || 0) + 1;
+
+            });
+
+
+            let best = "";
+
+            let max = 0;
+
+
+            for (let remedy in count) {
+
+                if (count[remedy] > max) {
+
+                    max =
+                        count[remedy];
+
+                    best =
+                        remedy;
+                }
+
+            }
+
+
+            document.getElementById("result")
+                .innerHTML =
+                "Suggested Remedy : " + best;
+
+        }
+
+
+        // Make functions available
+        // to onclick buttons
+
+        window.loadSymptoms =
+            loadSymptoms;
+
+        window.findRemedy =
+            findRemedy;
+
+    </script>
+
 
 </body>
 
